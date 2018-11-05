@@ -52,7 +52,7 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "gpio-i2c.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -92,7 +92,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+	I2C_GPIO_Config();
   /* USER CODE END Init */
 
   /* Configure the system clock */

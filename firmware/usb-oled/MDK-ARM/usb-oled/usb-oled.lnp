@@ -7,6 +7,8 @@
 "usb-oled\usbd_desc.o"
 "usb-oled\usbd_conf.o"
 "usb-oled\stm32f0xx_hal_msp.o"
+"usb-oled\gpio-i2c.o"
+"usb-oled\ssd1316.o"
 "usb-oled\usbd_core.o"
 "usb-oled\usbd_ctlreq.o"
 "usb-oled\usbd_customhid.o"
