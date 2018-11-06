@@ -2,6 +2,7 @@
 */
 #include "stm32f0xx_hal.h"
 #include "stdlib.h"
+#include "gpio-i2c.h"
 
 #define TRUE			1
 #define FALSE			0
@@ -150,19 +151,21 @@ uint8_t I2C_ReceiveByte(void) //数据从高位到低位
 	return ReceiveByte;		
 }
 
-int  I2C_WirteByte(uint8_t addr, uint8_t data)
+int  I2C_SendBuf(uint8_t* data, int len, int flag)
 {
-	if(!I2C_START()) return FALSE;
+	if(flag & I2C_FLAG_START)
+		if(!I2C_START()) return FALSE;
 	
-	I2C_SendByte(addr);	//器件地址
-	
-	if(!I2C_WaitAck())
-	{		
-		I2C_STOP();
-		return FALSE;
+	for(int i=0; i < len; i++){
+		I2C_SendByte(data[i]); //数据
+		if(!I2C_WaitAck())
+		{		
+			I2C_STOP();
+			return FALSE;
+		}
 	}
-	I2C_SendByte(data); //数据
-	I2C_WaitAck();
-	I2C_STOP();
+	
+	if(flag & I2C_FLAG_STOP)
+		I2C_STOP();
 	return TRUE;
 }

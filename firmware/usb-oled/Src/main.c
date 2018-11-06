@@ -53,6 +53,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "gpio-i2c.h"
+#include "ssd1316.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -99,7 +100,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+	SSD1316_Init();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
