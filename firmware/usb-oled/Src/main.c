@@ -54,6 +54,8 @@
 /* USER CODE BEGIN Includes */
 #include "gpio-i2c.h"
 #include "ssd1316.h"
+#include "Adafruit_GFX.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -93,21 +95,23 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	I2C_GPIO_Config();
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-	SSD1316_Init();
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-
+	I2C_GPIO_Config();
+	SSD1316_Init();
+	Adafruit_GFX_init(128,32,SSD1316_drawPixel);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -116,9 +120,30 @@ int main(void)
   {
 
   /* USER CODE END WHILE */
-
+		int cpu,mem;
+			SSD1316_Clear();
+			Adafruit_GFX_setCursor(0,0);
+			cpu = rand()%100;
+			mem = rand()%10+50;
+			printf("--Usb Monitor Demo--\n");
+			//printf("CPU: %02d    TEMP: 45C\n",cpu);
+			//printf("GPU: %02d    TEMP: 28C\n",0);
+			//printf("MEM: %02d    TEMP: 32C\n",46);
+			//printf("DSK: %02d    TEMP: 35C\n",83);
+			//Adafruit_GFX_drawLine(t,63-cpu/3,t,63,WHITE);
+			printf("CPU:\n");
+			printf("MEM:\n");
+			printf("TMP:\n");
+      Adafruit_GFX_fillRect(28,9,cpu,6,0xFFFF);
+			Adafruit_GFX_fillRect(28,17,76,6,0xFFFF);
+			Adafruit_GFX_fillRect(28,25,60,6,0xFFFF);
+			//Adafruit_GFX_setCursor(4,0);
+			//Adafruit_GFX_write('A');
+			//Adafruit_GFX_write('B');
+			SSD1316_Refresh();
+			HAL_Delay(100);
   /* USER CODE BEGIN 3 */
-
+			
   }
   /* USER CODE END 3 */
 
@@ -210,6 +235,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+int fputc(int ch, FILE* stream)
+{
+	Adafruit_GFX_write(ch);
+    return ch;
+}
 
 /* USER CODE END 4 */
 

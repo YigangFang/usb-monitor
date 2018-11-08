@@ -2,12 +2,13 @@
 #include "gpio-i2c.h"
 
 #define SSD1316_ADDR 0x7a
+uint8_t framebuf[128*4]; //128*32 dot
 
 void Write_Command(uint8_t cmd){
 	uint8_t txbuf[3];
-	txbuf[0] = SSD1316_ADDR;
-	txbuf[1] = 0x00;
-	txbuf[2] = cmd;
+ 	txbuf[0] = SSD1316_ADDR;
+ 	txbuf[1] = 0x00;
+ 	txbuf[2] = cmd;
 	I2C_SendBuf(txbuf, 3, I2C_FLAG_START|I2C_FLAG_STOP);
 }
 
@@ -21,18 +22,34 @@ void Write_Data(uint8_t *data, int len){
 
 void SSD1316_Clear(void){
 	int  page;
-	uint8_t data[128] = {0};
-	for(page=0;page<8;page++)
+	memset(framebuf,0x00,sizeof(framebuf));
+
+}
+
+void SSD1316_Refresh(void){
+	int  page;
+	//memset(framebuf,0x0,sizeof(framebuf));
+	for(page=0;page<4;page++)
 	{
 		Write_Command(0xb0+page);		//page0-page1
 		Write_Command(0x00);		//low column start address
 		Write_Command(0x10);		//high column start address
-		Write_Data(data,sizeof(data));
-	}
+		Write_Data(framebuf+128*page, 128);
+ }
+}
+
+void SSD1360_Reset(){
+	GPIOA->BRR 	= GPIO_PIN_2;
+	HAL_Delay(100);
+	GPIOA->BSRR 	= GPIO_PIN_2;
+	HAL_Delay(100);
 }
 
 void SSD1316_Init(void) 
-{ 
+ { 
+	 
+	SSD1360_Reset();
+#if 0
   Write_Command(0xAE);      // Set Display Off 
 	Write_Command(0xD5);      // Display divide ratio/osc. freq. mode 
 	Write_Command(0xC1);      // 115HZ 
@@ -58,7 +75,46 @@ void SSD1316_Init(void)
 	Write_Command(0xDB);      // VCOMH deselect level mode 
 	Write_Command(0x00); 
 	Write_Command(0xA4);      // Set Entire Display On/Off 
-	Write_Command(0xA6);      // Set Normal Display   
-	SSD1316_Clear(); 
+	Write_Command(0xA6);      // Set Normal Display  
+#else
+Write_Command(0xAE);//--display off
+	Write_Command(0x00);//---set low column address
+	Write_Command(0x10);//---set high column address
+	Write_Command(0x40);//--set start line address  
+	Write_Command(0xB0);//--set page address
+	Write_Command(0x81); // contract control
+	Write_Command(0x60);//--128   
+	Write_Command(0xA1);//set segment remap 
+	Write_Command(0xA6);//--normal / reverse
+	Write_Command(0xA8);//--set multiplex ratio(1 to 64)
+	Write_Command(0x1F);//--1/16 duty
+	Write_Command(0xC0);//Com scan direction
+	Write_Command(0xD3);//-set display offset
+	Write_Command(0x00);//
+	Write_Command(0xD5);//set osc division
+	Write_Command(0x80);//
+	Write_Command(0xD9);//set pre-charge period
+	Write_Command(0x22);//
+	Write_Command(0xDA);//set COM pins
+	Write_Command(0x12);//
+	Write_Command(0xDB);//set vcomh
+	Write_Command(0x40);//
+	Write_Command(0x8D);//set charge pump enable
+	Write_Command(0x14);//
+	Write_Command(0xAF);//--turn on oled panel
+#endif
 	Write_Command(0xAF);      // Set Display On 
-} 
+		SSD1316_Clear(); 
+ } 
+
+ // the most basic function, set a single pixel
+void SSD1316_drawPixel(int16_t x, int16_t y, uint16_t color) {
+
+    int index = x+ (y/8)*128;
+    //printf("index = %d\n", index);
+
+		if(color)
+      framebuf[index] |=  (1 << (y&7));
+		else
+      framebuf[index] &= ~(1 << (y&7));
+}

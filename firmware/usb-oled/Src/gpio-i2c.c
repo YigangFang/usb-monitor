@@ -9,7 +9,10 @@
 #define I2C_GPIO	GPIOA
 #define I2C_SCL		GPIO_PIN_1
 #define I2C_SDA		GPIO_PIN_0
+#define I2C_RST		GPIO_PIN_2
 
+#define RST_H			(I2C_GPIO->BSRR 	= I2C_RST)
+#define RST_L			(I2C_GPIO->BRR 		= I2C_RST)
 #define SCL_H			(I2C_GPIO->BSRR 	= I2C_SCL)
 #define SCL_L			(I2C_GPIO->BRR 		= I2C_SCL)
 #define	SDA_H			(I2C_GPIO->BSRR		= I2C_SDA)
@@ -21,17 +24,23 @@
  
 void I2C_GPIO_Config(void)
 {
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 	GPIO_InitTypeDef GPIO_InitStructure;
 	/*Configure I2C1 Pins:SCL and SDA*/
-	GPIO_InitStructure.Pin = GPIO_PIN_6 |GPIO_PIN_7;
+	GPIO_InitStructure.Pin = I2C_SCL |I2C_SDA;
 	GPIO_InitStructure.Speed =GPIO_SPEED_FREQ_HIGH;
 	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_OD;
-	HAL_GPIO_Init(GPIOB,&GPIO_InitStructure);
+	HAL_GPIO_Init(I2C_GPIO,&GPIO_InitStructure);
+	
+	GPIO_InitStructure.Pin = I2C_RST;
+	GPIO_InitStructure.Speed =GPIO_SPEED_FREQ_HIGH;
+	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+	HAL_GPIO_Init(I2C_GPIO,&GPIO_InitStructure);
 }
  
 void I2C_delay(void)
 {
-	uint8_t i=100; //设置通信速度
+	uint8_t i=20; //设置通信速度
 	
 	while(i)
 	{
@@ -153,7 +162,7 @@ uint8_t I2C_ReceiveByte(void) //数据从高位到低位
 
 int  I2C_SendBuf(uint8_t* data, int len, int flag)
 {
-	if(flag & I2C_FLAG_START)
+ 	if(flag & I2C_FLAG_START)
 		if(!I2C_START()) return FALSE;
 	
 	for(int i=0; i < len; i++){

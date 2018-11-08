@@ -29,8 +29,6 @@ electronut.in
 
 // function pointer for drawPixels
 typedef void (*DrawPixelHandler)(int16_t x, int16_t y, uint16_t color) ;
-DrawPixelHandler _drawPixel;
-
 // need to pass in the handler for drawing a pixel
 void Adafruit_GFX_init(int16_t w, int16_t h, DrawPixelHandler drawPixel);
 void Adafruit_GFX_drawPixel(int16_t x, int16_t y, uint16_t color);

@@ -25,6 +25,7 @@ electronut.in
 #include "fount.c"
 
 int16_t  _width, _height, cursor_x, cursor_y, textcolor, textbgcolor, textsize;
+DrawPixelHandler _drawPixel = NULL;
 
 #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 
@@ -34,9 +35,10 @@ void Adafruit_GFX_init(int16_t w, int16_t h, DrawPixelHandler drawPixel) {
   _drawPixel = drawPixel;
 
   cursor_y = 0;
-	cursor_x = 4;
+	cursor_x = 0;
   textsize = 1;
-  textcolor = textbgcolor = 0xFFFF;
+  textcolor = 0xFFFF;
+	textbgcolor = 0x0000;
 }
 
 
@@ -359,7 +361,7 @@ void Adafruit_GFX_drawBitmap(int16_t x, int16_t y,
 void cursor_inc(int x, int y){
 	cursor_x += x * textsize * 6;
 	if(cursor_x > _width - textsize * 6){
-		cursor_x = 4;
+		cursor_x = 0;
 		cursor_y += textsize*8;
 	}
 	cursor_y += y * textsize * 8;
@@ -371,9 +373,9 @@ void cursor_inc(int x, int y){
 void Adafruit_GFX_write(uint8_t c) {
   if (c == '\n') {
     cursor_inc(0,1);
-    cursor_x = 4;
+    cursor_x = 0;
   } else if (c == '\r') {
-		cursor_x = 4;
+		cursor_x = 0;
   } else {
     Adafruit_GFX_drawChar(cursor_x, cursor_y, c, textcolor, textbgcolor, textsize);
     cursor_inc(1,0);
