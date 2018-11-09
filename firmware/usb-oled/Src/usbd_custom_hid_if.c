@@ -120,7 +120,21 @@
 __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DESC_SIZE] __ALIGN_END =
 {
   /* USER CODE BEGIN 0 */
-  0x00,
+
+ 0x06, 0xFF, 0x00,	        /* USAGE_PAGE (Vendor Page: 0xFF00) */						
+ 0x09, 0x01,			/* USAGE (Demo Kit) 			  */	
+ 0xa1, 0x01,			/* COLLECTION (Application) 	  */			
+ /* 6 */
+ 
+ /* Led 1 */		
+ 0x85, 0x01,			/*	   REPORT_ID (1)			*/
+ 0x09, 0x01,			/*	   USAGE (LED 1)				*/
+ 0x15, 0x00,			/*	   LOGICAL_MINIMUM (0)		  */		  
+ 0x25, 0x01,			/*	   LOGICAL_MAXIMUM (1)		  */		   
+ 0x75, 0x08,			/*	   REPORT_SIZE (8)			  */		
+ 0x95, 0x14,			/*	   REPORT_COUNT (1) 	wxy add  report_count : data length 	 */ 	  
+ 0x81, 0x03,			/*    FEATURE (Data,Var,Abs,Vol) */  
+
   /* USER CODE END 0 */
   0xC0    /*     END_COLLECTION	             */
 };

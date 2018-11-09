@@ -118,30 +118,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+		int cpu=rand()%100;
+		Adafruit_GFX_setCursor(0,0);
+		printf("--Usb Monitor Demo--\n");
+		printf("CPU:%02d      TEMP:%02d\n",cpu,43);
+		printf("GPU:%02d      TEMP:%02d\n",0,32);
+		printf("MEM:%02d      TEMP:%02d\n",23,28);
+		SSD1316_Refresh();
+		HAL_Delay(200);
   /* USER CODE END WHILE */
-		int cpu,mem;
-			SSD1316_Clear();
-			Adafruit_GFX_setCursor(0,0);
-			cpu = rand()%100;
-			mem = rand()%10+50;
-			printf("--Usb Monitor Demo--\n");
-			//printf("CPU: %02d    TEMP: 45C\n",cpu);
-			//printf("GPU: %02d    TEMP: 28C\n",0);
-			//printf("MEM: %02d    TEMP: 32C\n",46);
-			//printf("DSK: %02d    TEMP: 35C\n",83);
-			//Adafruit_GFX_drawLine(t,63-cpu/3,t,63,WHITE);
-			printf("CPU:\n");
-			printf("MEM:\n");
-			printf("TMP:\n");
-      Adafruit_GFX_fillRect(28,9,cpu,6,0xFFFF);
-			Adafruit_GFX_fillRect(28,17,76,6,0xFFFF);
-			Adafruit_GFX_fillRect(28,25,60,6,0xFFFF);
-			//Adafruit_GFX_setCursor(4,0);
-			//Adafruit_GFX_write('A');
-			//Adafruit_GFX_write('B');
-			SSD1316_Refresh();
-			HAL_Delay(100);
+
   /* USER CODE BEGIN 3 */
 			
   }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-<ProjectName>Z:\work\usb-monitor\firmware\usb-oled\\usb-oled</ProjectName>
+<ProjectName>E:\PartJob\usb-monitor\firmware\usb-oled\\usb-oled</ProjectName>
 <ProjectNature>C</ProjectNature> 
 <CMSIS>..\Drivers\CMSIS</CMSIS>
-<HAL_Driver>C:\Users\tony\STM32Cube\Repository\STM32Cube_FW_F0_V1.9.0\Drivers\CMSIS</HAL_Driver>
+<HAL_Driver>C:\Users\coder\STM32Cube\Repository\STM32Cube_FW_F0_V1.9.0\Drivers\CMSIS</HAL_Driver>
 <Toolchain>MDK-ARM</Toolchain>
 	<Toolversion>5</Toolversion>
 <Version>0</Version>
@@ -26,7 +26,7 @@
   <config>
     <name>usb-oled</name>				
     <device>STM32F070F6Px</device>		 
-    <heapSize>0x200</heapSize>
+    <heapSize>0x400</heapSize>
     <stackSize>0x400</stackSize>
     
     	<cpuclock>48</cpuclock>
