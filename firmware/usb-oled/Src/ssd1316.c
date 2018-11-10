@@ -2,7 +2,7 @@
 #include "gpio-i2c.h"
 
 #define SSD1316_ADDR 0x7a
-uint8_t framebuf[128*4]; //128*32 dot
+uint8_t framebuf[128*4]={0}; //128*32 dot
 
 void Write_Command(uint8_t cmd){
 	uint8_t txbuf[3];
@@ -16,7 +16,7 @@ void Write_Data(uint8_t *data, int len){
 	uint8_t txbuf[2];
 	txbuf[0] = SSD1316_ADDR;
 	txbuf[1] = 0x40;
-	I2C_SendBuf(txbuf, 3, I2C_FLAG_START);
+	I2C_SendBuf(txbuf, 2, I2C_FLAG_START);
 	I2C_SendBuf(data, len, I2C_FLAG_STOP);
 }
 
@@ -49,7 +49,7 @@ void SSD1316_Init(void)
  { 
 	 
 	SSD1360_Reset();
-#if 0
+#if 1
   Write_Command(0xAE);      // Set Display Off 
 	Write_Command(0xD5);      // Display divide ratio/osc. freq. mode 
 	Write_Command(0xC1);      // 115HZ 
@@ -64,8 +64,8 @@ void SSD1316_Init(void)
 	Write_Command(0x40);      // Set Display Start Line 
 	Write_Command(0x8D);      // DC-DC Control Mode Set 
 	Write_Command(0x14);      // DC-DC ON Mode Set   
-	Write_Command(0xA0);      // Segment Remap     
-	Write_Command(0xC8);      // Set COM Output Scan Direction 
+	Write_Command(0xA1);      // 0xA0 Left Right Segment Remap     
+	Write_Command(0xC0);      // 0xC8 Up Down Set COM Output Scan Direction 
 	Write_Command(0xDA);      // Seg pads hardware: alternative 
 	Write_Command(0x12); 
 	Write_Command(0x81);      // Contrast control 
@@ -103,8 +103,9 @@ Write_Command(0xAE);//--display off
 	Write_Command(0x14);//
 	Write_Command(0xAF);//--turn on oled panel
 #endif
+	SSD1316_Clear(); 
+	SSD1316_Refresh();
 	Write_Command(0xAF);      // Set Display On 
-		SSD1316_Clear(); 
  } 
 
  // the most basic function, set a single pixel

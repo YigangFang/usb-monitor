@@ -120,21 +120,45 @@
 __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DESC_SIZE] __ALIGN_END =
 {
   /* USER CODE BEGIN 0 */
+    0x06, 0x00, 0xFF,      /* USAGE_PAGE (Vendor Page: 0xFF00) */                       
+    0x09, 0x01,            /* USAGE (Demo Kit)               */    
+    0xa1, 0x01,            /* COLLECTION (Application)       */            
+    /* 7 */
+    
+    /* Out Report 1 */        
+    0x85, 0x01,            /*     REPORT_ID (1)		     */
+    0x09, 0x01,            /*     USAGE (LED 1)	             */
+    0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */          
+    0x25, 0xFF,            /*     LOGICAL_MAXIMUM (1)        */           
+    0x75, 0x08,            /*     REPORT_SIZE (8)            */        
+    0x95, USBD_CUSTOMHID_OUTREPORT_BUF_SIZE-1,/*     REPORT_COUNT (64)           */       
+    0xB1, 0x82,             /*    FEATURE (Data,Var,Abs,Vol) */     
 
- 0x06, 0xFF, 0x00,	        /* USAGE_PAGE (Vendor Page: 0xFF00) */						
- 0x09, 0x01,			/* USAGE (Demo Kit) 			  */	
- 0xa1, 0x01,			/* COLLECTION (Application) 	  */			
- /* 6 */
- 
- /* Led 1 */		
- 0x85, 0x01,			/*	   REPORT_ID (1)			*/
- 0x09, 0x01,			/*	   USAGE (LED 1)				*/
- 0x15, 0x00,			/*	   LOGICAL_MINIMUM (0)		  */		  
- 0x25, 0x01,			/*	   LOGICAL_MAXIMUM (1)		  */		   
- 0x75, 0x08,			/*	   REPORT_SIZE (8)			  */		
- 0x95, 0x14,			/*	   REPORT_COUNT (1) 	wxy add  report_count : data length 	 */ 	  
- 0x81, 0x03,			/*    FEATURE (Data,Var,Abs,Vol) */  
+    0x85, 0x01,            /*     REPORT_ID (1)              */
+    0x09, 0x01,            /*     USAGE (LED 1)              */
+    0x91, 0x82,            /*     OUTPUT (Data,Var,Abs,Vol)  */
+    /* 27 */
 
+    /* key Push Button */  
+    0x85, 0x02,            /*     REPORT_ID (5)              */
+    0x09, 0x05,            /*     USAGE (Push Button)        */      
+    0x15, 0x00,            /*     LOGICAL_MINIMUM (0)        */      
+    0x25, 0x01,            /*     LOGICAL_MAXIMUM (1)        */      
+    0x75, 0x01,            /*     REPORT_SIZE (1)            */  
+    0x81, 0x82,            /*     INPUT (Data,Var,Abs,Vol)   */   
+    
+    0x09, 0x05,            /*     USAGE (Push Button)        */               
+    0x75, 0x01,            /*     REPORT_SIZE (1)            */           
+    0xb1, 0x82,            /*     FEATURE (Data,Var,Abs,Vol) */  
+         
+    0x75, 0x07,            /*     REPORT_SIZE (7)            */           
+    0x81, 0x83,            /*     INPUT (Cnst,Var,Abs,Vol)   */                    
+    0x85, 0x02,            /*     REPORT_ID (2)              */         
+                    
+    0x75, 0x07,            /*     REPORT_SIZE (7)            */           
+    0xb1, 0x83,            /*     FEATURE (Cnst,Var,Abs,Vol) */                      
+    /* 55 */
+		
   /* USER CODE END 0 */
   0xC0    /*     END_COLLECTION	             */
 };
@@ -167,7 +191,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static int8_t CUSTOM_HID_Init_FS(void);
 static int8_t CUSTOM_HID_DeInit_FS(void);
-static int8_t CUSTOM_HID_OutEvent_FS(uint8_t event_idx, uint8_t state);
+static int8_t CUSTOM_HID_OutEvent_FS(uint8_t *event_idx, int len);
 
 /**
   * @}
@@ -216,9 +240,12 @@ static int8_t CUSTOM_HID_DeInit_FS(void)
   * @param  state: Event state
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CUSTOM_HID_OutEvent_FS(uint8_t event_idx, uint8_t state)
+static int8_t CUSTOM_HID_OutEvent_FS(uint8_t *event_idx, int len)
 {
   /* USER CODE BEGIN 6 */
+	extern uint8_t  framebuf[128*4];
+	int page = event_idx[2]&0xf;
+	memcpy(framebuf + page*32, event_idx+4, 32);
   return (USBD_OK);
   /* USER CODE END 6 */
 }

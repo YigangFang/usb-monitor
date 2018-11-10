@@ -40,12 +40,10 @@ void I2C_GPIO_Config(void)
  
 void I2C_delay(void)
 {
-	uint8_t i=20; //设置通信速度
-	
-	while(i)
-	{
-		i--;
-	}	
+	__ASM("nop");
+	__ASM("nop");
+	__ASM("nop");
+	__ASM("nop");
 }
 
 int  I2C_START(void)
