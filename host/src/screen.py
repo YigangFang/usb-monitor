@@ -12,7 +12,7 @@ class display:
     def inc_cur(self, x, y):
         if x:
             self.x = self.x + x
-            if self.x == 22:
+            if self.x == 128:
                 self.x = 0
                 self.y = self.y + 1
         if y:
@@ -26,9 +26,9 @@ class display:
             if i == '\n':
                 self.inc_cur(0,1)
             else:
-                cur = self.y * 128 + self.x * 6
+                cur = self.y * 128 + self.x
                 self.buf[cur:cur+6]=font.get(ord(i))
-                self.inc_cur(1,0)
+                self.inc_cur(6,0)
 
     def data(self):
         return self.buf
@@ -38,7 +38,17 @@ class display:
         self.x = 0
         self.y = 0
     
-    def rectangle(self, x, y, length):
+    def cursor(self, x, y):
+        self.x = x
+        self.y = y
+
+    def width(self):
+        return self.w
+
+    def height(self):
+        return self.h
+
+    def rectangle(self, x, y, length, color):
         cur = y * 128 + x
-        self.buf[cur:cur+length] = [0x7e]*length
+        self.buf[cur:cur+length] = [color]*length
     

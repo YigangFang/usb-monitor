@@ -4,6 +4,7 @@ import hid
 import psutil
 import font
 import screen
+import style
 
 dev = hid.hid(0x0483, 0x5750)
 scr = screen.display(128,32)
@@ -18,16 +19,11 @@ while True:
     #calculate 
     mem = int(phymem.used * 100/phymem.total)
     net = int(bytes_recv * 100/(10*1024*1024)) #10MByte 
+    #render
+    style.display_percent_bar(scr, 0 , 'CPU:', cpu)
+    style.display_percent_bar(scr, 1 , 'MEM:', mem)
+    style.display_percent_bar(scr, 2 , 'DSK:', disk)
+    style.display_percent_bar(scr, 3 , 'NET:', net)
     #display
-    scr.clear()
-    scr.write('CPU:              ' + str(cpu) + '\n')
-    scr.rectangle(24, 0, cpu*92/100)
-    scr.write('MEM:              ' + str(mem) + '\n')
-    scr.rectangle(24, 1, mem*92/100)
-    scr.write('DSK:              ' + str(disk) + '\n')
-    scr.rectangle(24, 2, disk*92/100)
-    scr.write('NET:              ' + str(net) + '\n')
-    scr.rectangle(24, 3, net*92/100)
-    #fresh screen
     dev.write(scr.data())
 
