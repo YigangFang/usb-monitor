@@ -44,6 +44,8 @@ void I2C_delay(void)
 	__ASM("nop");
 	__ASM("nop");
 	__ASM("nop");
+	__ASM("nop");
+	__ASM("nop");
 }
 
 int  I2C_START(void)

@@ -51,7 +51,7 @@
 #include "usbd_custom_hid_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "ssd1316.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -243,9 +243,11 @@ static int8_t CUSTOM_HID_DeInit_FS(void)
 static int8_t CUSTOM_HID_OutEvent_FS(uint8_t *event_idx, int len)
 {
   /* USER CODE BEGIN 6 */
-	extern uint8_t  framebuf[128*4];
-	int page = event_idx[2]&0xf;
-	memcpy(framebuf + page*32, event_idx+4, 32);
+	SSD1316_screen_save(0);
+	if(event_idx[1] == 0)/*page write*/
+		SSD1316_Page_write(event_idx[2],event_idx+4);
+	else if(event_idx[1] == 1)/*command write*/
+		SSD1316_reg_write(event_idx[2], event_idx+4);
   return (USBD_OK);
   /* USER CODE END 6 */
 }

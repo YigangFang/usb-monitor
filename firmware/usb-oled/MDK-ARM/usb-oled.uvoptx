@@ -152,7 +152,7 @@
           <Type>0</Type>
           <LineNumber>367</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134225532</Address>
+          <Address>134225536</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -166,9 +166,9 @@
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>248</LineNumber>
+          <LineNumber>249</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218312</Address>
+          <Address>134218330</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -177,14 +177,19 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/usbd_custom_hid_if.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\usb_oled\../Src/usbd_custom_hid_if.c\248</Expression>
+          <Expression>\\usb_oled\../Src/usbd_custom_hid_if.c\249</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>event_idx</ItemText>
+          <ItemText>mem</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>page</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

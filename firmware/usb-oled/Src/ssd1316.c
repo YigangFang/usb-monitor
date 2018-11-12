@@ -1,5 +1,6 @@
 #include "stm32f0xx_hal.h"
 #include "gpio-i2c.h"
+#include <string.h>
 
 #define SSD1316_ADDR 0x7a
 uint8_t framebuf[128*4]={0}; //128*32 dot
@@ -21,9 +22,7 @@ void Write_Data(uint8_t *data, int len){
 }
 
 void SSD1316_Clear(void){
-	int  page;
 	memset(framebuf,0x00,sizeof(framebuf));
-
 }
 
 void SSD1316_Refresh(void){
@@ -38,18 +37,50 @@ void SSD1316_Refresh(void){
  }
 }
 
+void SSD1316_Page_write(uint8_t page, uint8_t *data){
+		Write_Command(0xb0+(page>>2));		//page0-page1
+		Write_Command(0x00);		//low column start address
+		Write_Command(0x10|((page&0x03)<<1));		//high column start address
+		memcpy(framebuf + page*32, data, 32);
+		Write_Data(data, 32);
+}
+
 void SSD1360_Reset(){
+	volatile int i = 100;
 	GPIOA->BRR 	= GPIO_PIN_2;
-	HAL_Delay(100);
+	while(i--);
 	GPIOA->BSRR 	= GPIO_PIN_2;
-	HAL_Delay(100);
+}
+
+
+void SSD1316_reg_write( uint8_t len, uint8_t *reg){
+	if(len == 0)
+		SSD1360_Reset();
+	else
+		for(int i=0; i < len;i++){
+			Write_Command(reg[i]);
+		}
+}
+
+void SSD1316_screen_save(int on){
+	static int times = 0;
+	if(on)
+		times++;
+	else{
+		times = 0;
+		Write_Command(0xAF);
+	}
+	
+	if(times > 30){
+		Write_Command(0xAE);
+	}
 }
 
 void SSD1316_Init(void) 
  { 
 	 
 	SSD1360_Reset();
-#if 1
+
   Write_Command(0xAE);      // Set Display Off 
 	Write_Command(0xD5);      // Display divide ratio/osc. freq. mode 
 	Write_Command(0xC1);      // 115HZ 
@@ -76,33 +107,7 @@ void SSD1316_Init(void)
 	Write_Command(0x00); 
 	Write_Command(0xA4);      // Set Entire Display On/Off 
 	Write_Command(0xA6);      // Set Normal Display  
-#else
-Write_Command(0xAE);//--display off
-	Write_Command(0x00);//---set low column address
-	Write_Command(0x10);//---set high column address
-	Write_Command(0x40);//--set start line address  
-	Write_Command(0xB0);//--set page address
-	Write_Command(0x81); // contract control
-	Write_Command(0x60);//--128   
-	Write_Command(0xA1);//set segment remap 
-	Write_Command(0xA6);//--normal / reverse
-	Write_Command(0xA8);//--set multiplex ratio(1 to 64)
-	Write_Command(0x1F);//--1/16 duty
-	Write_Command(0xC0);//Com scan direction
-	Write_Command(0xD3);//-set display offset
-	Write_Command(0x00);//
-	Write_Command(0xD5);//set osc division
-	Write_Command(0x80);//
-	Write_Command(0xD9);//set pre-charge period
-	Write_Command(0x22);//
-	Write_Command(0xDA);//set COM pins
-	Write_Command(0x12);//
-	Write_Command(0xDB);//set vcomh
-	Write_Command(0x40);//
-	Write_Command(0x8D);//set charge pump enable
-	Write_Command(0x14);//
-	Write_Command(0xAF);//--turn on oled panel
-#endif
+
 	SSD1316_Clear(); 
 	SSD1316_Refresh();
 	Write_Command(0xAF);      // Set Display On 

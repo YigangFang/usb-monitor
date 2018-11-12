@@ -120,16 +120,13 @@ int main(void)
 	//uint8_t buf[2];
 	//HAL_Delay(200);
 	//USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS,buf,2);
+	printf("\n--Usb Monitor Demo--\n");
+	SSD1316_Refresh();
   while (1)
   {
-		/*int cpu=rand()%100;
-		Adafruit_GFX_setCursor(0,0);
-		printf("--Usb Monitor Demo--\n");
-		printf("CPU:%02d      TEMP:%02d\n",cpu,43);
-		printf("GPU:%02d      TEMP:%02d\n",0,32);
-		printf("MEM:%02d      TEMP:%02d\n",23,28);*/
-		SSD1316_Refresh();
-		HAL_Delay(3);
+
+		HAL_Delay(1000);
+		SSD1316_screen_save(1);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
